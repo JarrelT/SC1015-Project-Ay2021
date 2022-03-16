@@ -3,3 +3,7 @@
 ## Description
 
 * SC1015 (Project)
+
+```
+sudo apt install python3 -y 
+```
