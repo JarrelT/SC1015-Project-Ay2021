@@ -7,4 +7,4 @@
 ```
 sudo apt install python3 -y 
 ```
-* Vernon is a cute boy
+* Jarrel and Jing Kai are cute boys
