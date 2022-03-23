@@ -2191,11 +2191,3 @@ Date,W0000_0600,W0601_1200,W1201_1800,W1801_2359,WS1,WS2,WS3,WS4,A0000_0600,A060
 2021-12-29,Clear,Fog,Clear,Clear,NA,Severe,NA,NA,2,2,2,2,289,TRUE
 2021-12-30,Clear,Fog,Clear,Clear,NA,Severe,NA,NA,2,2,2,2,303,TRUE
 2021-12-31,Fog,Fog,Rain,Clear,Severe,Severe,Light,NA,2,2,2,2,300,TRUE
-2022-01-01,Clear,Clear,Clear,Clear,NA,NA,NA,NA,2,0,0,0,14,TRUE
-2022-01-02,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-03,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-04,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-05,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-06,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-07,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
-2022-01-08,Clear,Clear,Clear,Clear,NA,NA,NA,NA,0,0,0,0,0,FALSE
