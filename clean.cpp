@@ -45,6 +45,9 @@ int main(int argc, char* argv[])
 
 	struct tm tmp_tm = { 0 };
 	/*
+		
+		TODO: add percipitation columns
+
 		total 2016 01 30 to 2021 12 31, 6 years ~ 2190 days
 		date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,accT,accTF
 		UTC TIME IS USED FOR WEATHER
