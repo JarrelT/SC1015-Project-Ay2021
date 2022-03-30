@@ -7,6 +7,9 @@
 
 using namespace std;
 
+#define _VERSION_ "Subsidiary program v1.00 202203300909"
+#define _BIRTH___ "202203231855"
+
 typedef struct {
 	string weather[4];
 	string weatherS[4];
@@ -20,15 +23,17 @@ time_t strTime(char* b_, struct tm* default_);
 
 string getCol(const char* buf, int idx);
 
-void initRows(row_t *r, size_t n);
+void initRows(row_t* r, size_t n);
 
-int main()
+int main(int argc, char* argv[])
 {
+	/* compile this source and run the program with country (1 at a time) as argument */
+	/* eg. ./[prog] 'New York' */
 	const size_t IDX = 2200;
 
-	ifstream weather("WeatherEvents_Jan2016-Dec2021.csv");
+	ifstream weather("WeatherEvents_Jan2016-Dec2021.csv"); // File name change accordingly
 	ifstream acc("US_Accidents_Dec21_updated.csv");
-	ofstream of("Combined.csv");
+	ofstream of(string((argc >= 2) ? argv[1] : "Miami") + ".csv");
 
 	const time_t ST = 1451577600; /* 20160101000000 */
 	const time_t ET = 1640880000; /* 20211231000000 */
@@ -46,7 +51,7 @@ int main()
 		WHILE LOCAL TIME IS USED FOR ACCIDENTS
 	*/
 	time_t CTZ = 3600 * 4, row_time = ST; /* GMT-4 for Miami [UPDATE AS REQUIRED] */
-	const string city = "Miami"; /* [UPDATE AS REQUIRED] */
+	const string city = (argc >= 2) ? argv[1] : "Miami"; /* [UPDATE AS REQUIRED] */
 
 	if (!weather || !acc || !of) {
 		cerr << "File not found or permission denied for I/O operation\n";
@@ -117,7 +122,7 @@ int main()
 
 	return 0;
 }
-void initRows(row_t *r, size_t n)
+void initRows(row_t* r, size_t n)
 {
 	for (size_t i = 0; i < n; i++) {
 		r[i].accT = 0;
