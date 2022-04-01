@@ -13,6 +13,7 @@ using namespace std;
 typedef struct {
 	string weather[4];
 	string weatherS[4];
+	double precipitation;
 	int accS[4];
 	int accT;
 } row_t;
@@ -75,12 +76,15 @@ int main(int argc, char* argv[])
 			size_t row_idx = (size_t)((double)(st - ST) / RT);
 			size_t col_idx_s = ((st - ST) % RT) / 21600;
 			size_t col_idx_e = ((et - ST) % RT) / 21600;
+			double p_value = atof(getCol(buf.c_str(), 4)); /* CHANGE INDEX ACCORDINGLY */
 			rows[row_idx].weather[col_idx_s] = type;
 			rows[row_idx].weather[col_idx_e] = type;
 			rows[row_idx].weatherS[col_idx_s] = severity;
 			rows[row_idx].weatherS[col_idx_e] = severity;
+			rows[row_idx].weatherS[col_idx_e] = severity;
+			rows[row_idx].precipitation += p_value;
 			colCount++;
-			if (buf.find("2021-12-31") != string::npos)
+			if (buf.find("2021-12-31") != string::npos) /* just to ensure it is working */
 				cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << endl;
 		}
 	}
@@ -98,7 +102,7 @@ int main(int argc, char* argv[])
 			rows[row_idx].accS[col_idx_s] = atoi(severity.c_str());
 			rows[row_idx].accT++;
 			colCount++;
-			if (buf.find("2021-12-31") != string::npos)
+			if (buf.find("2021-12-31") != string::npos) /* just to ensure it is working */
 				cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << endl;
 		}
 	}
@@ -107,7 +111,7 @@ int main(int argc, char* argv[])
 	acc.close();
 
 	of << "Date,W0000_0600,W0601_1200,W1201_1800,W1801_2359,WS1,WS2,WS3,WS4,";
-	of << "A0000_0600,A0601_1200,A1201_1800,A1801_2359,A_Total,Accident\n";
+	of << "A0000_0600,A0601_1200,A1201_1800,A1801_2359,P_Value,A_Total,Accident\n";
 	for (size_t i = 0; i < IDX || row_time <= ET; i++) {
 		struct tm* tm_ = localtime(&row_time);
 		of << setfill('0') << setw(4) << tm_->tm_year + 1900 << "-";
@@ -119,6 +123,7 @@ int main(int argc, char* argv[])
 			of << rows[i].weatherS[j] << ",";
 		for (size_t j = 0; j < 4; j++)
 			of << rows[i].accS[j] << ",";
+		of << rows[i].precipitation << ",";
 		of << rows[i].accT << "," << ((rows[i].accT) ? "TRUE\n" : "FALSE\n");
 		row_time += RT;
 	}
@@ -137,6 +142,7 @@ void initRows(row_t* r, size_t n)
 		r[i].weatherS[1] = "NA";
 		r[i].weatherS[2] = "NA";
 		r[i].weatherS[3] = "NA";
+		r[i].precipitation = 0.0;
 		r[i].accS[0] = 0;
 		r[i].accS[1] = 0;
 		r[i].accS[2] = 0;
