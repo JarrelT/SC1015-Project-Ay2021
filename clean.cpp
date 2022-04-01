@@ -3,24 +3,25 @@
 #include <fstream>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <ctime>
 
 using namespace std;
 
-#define _VERSION_ "Subsidiary program v1.00 202203300909"
+#define _VERSION_ "Subsidiary program v1.03 202204020003"
 #define _BIRTH___ "202203231855"
 
 typedef struct {
 	string weather[4];
 	string weatherS[4];
-	double precipitation;
+	double p_value;
 	int accS[4];
 	int accT;
 } row_t;
 
 char* isInt(const char* b_);
 
-time_t strTime(char* b_, struct tm* default_);
+time_t strTime(char* b_);
 
 string getCol(const char* buf, int idx);
 
@@ -30,6 +31,16 @@ int main(int argc, char* argv[])
 {
 	/* compile this source and run the program with country (1 at a time) as argument */
 	/* eg. ./[prog] 'New York' */
+	/* 
+		g++ clean.cpp -std=c++11
+		./a.out Miami -4 && \
+		./a.out Denver -6 && \
+		./a.out Minneapolis -5 && \
+		./a.out 'New York' -4 && \
+		./a.out Phoenix -7 
+
+		./a.out Miami -4 && ./a.out Denver -6 && ./a.out Minneapolis -5 && ./a.out 'New York' -4 && ./a.out Phoenix -7
+	*/
 	const size_t IDX = 2200;
 
 	ifstream weather("WeatherEvents_Jan2016-Dec2021.csv"); // File name change accordingly
@@ -44,17 +55,13 @@ int main(int argc, char* argv[])
 	string buf;
 	int colCount = 0;
 
-	struct tm tmp_tm = { 0 };
 	/*
-		
-		TODO: add percipitation columns
-
 		total 2016 01 30 to 2021 12 31, 6 years ~ 2190 days
-		date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,accT,accTF
+		date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,p_value,accT,accTF
 		UTC TIME IS USED FOR WEATHER
 		WHILE LOCAL TIME IS USED FOR ACCIDENTS
 	*/
-	time_t CTZ = 3600 * 4, row_time = ST; /* GMT-4 for Miami [UPDATE AS REQUIRED] */
+	time_t CTZ = 3600 * ((argc >= 3) ? atoi(argv[2]) : -4), row_time = ST; /* GMT-4 for Miami [UPDATE AS REQUIRED] */
 	const string city = (argc >= 2) ? argv[1] : "Miami"; /* [UPDATE AS REQUIRED] */
 
 	if (!weather || !acc || !of) {
@@ -64,28 +71,28 @@ int main(int argc, char* argv[])
 	initRows(rows, IDX);
 
 	getline(weather, buf);
-	cout << "Processing: " << getCol(buf.c_str(), 10) << "\n";
+	cout << "Processing: " << getCol(buf.c_str(), 10) << " time_zone : " << CTZ << "\n";
 	while (getline(weather, buf)) {
 		if (getCol(buf.c_str(), 10) == city) {
 			string type = getCol(buf.c_str(), 1); /* 'Snow', 'Fog', 'Cold', 'Storm', 'Rain', 'Precipitation', 'Hail' */
 			string severity = getCol(buf.c_str(), 2); /* 'Light', 'Severe', 'Moderate', 'Heavy', 'UNK', 'Other' */
 			string startTime = getCol(buf.c_str(), 3);
 			string endTime = getCol(buf.c_str(), 4);
-			time_t st = strTime((char*)startTime.c_str(), &tmp_tm); /* Given UTC TIME */
-			time_t et = strTime((char*)endTime.c_str(), &tmp_tm); /* Given UTC TIME */
+			time_t st = strTime((char*)startTime.c_str()); /* Given UTC TIME */
+			time_t et = strTime((char*)endTime.c_str()); /* Given UTC TIME */
 			size_t row_idx = (size_t)((double)(st - ST) / RT);
 			size_t col_idx_s = ((st - ST) % RT) / 21600;
 			size_t col_idx_e = ((et - ST) % RT) / 21600;
-			double p_value = atof(getCol(buf.c_str(), 4)); /* CHANGE INDEX ACCORDINGLY */
+			double p_value = stof(getCol(buf.c_str(), 5)); /* CHANGE INDEX ACCORDINGLY */
 			rows[row_idx].weather[col_idx_s] = type;
 			rows[row_idx].weather[col_idx_e] = type;
 			rows[row_idx].weatherS[col_idx_s] = severity;
 			rows[row_idx].weatherS[col_idx_e] = severity;
 			rows[row_idx].weatherS[col_idx_e] = severity;
-			rows[row_idx].precipitation += p_value;
+			rows[row_idx].p_value += p_value;
 			colCount++;
-			if (buf.find("2021-12-31") != string::npos) /* just to ensure it is working */
-				cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << endl;
+			// if (colCount <= 10) /* just to ensure it is working */
+			// 	cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << "\t" << p_value << endl;
 		}
 	}
 	cout << "Found " << colCount << " entries for " << city << " (weather)" << endl;
@@ -96,14 +103,14 @@ int main(int argc, char* argv[])
 		if (getCol(buf.c_str(), 13) == city) {
 			string severity = getCol(buf.c_str(), 1); /* 4, 3, 2, 1 */
 			string startTime = getCol(buf.c_str(), 2); /* Given local time */
-			time_t st = strTime((char*)startTime.c_str(), &tmp_tm) + CTZ; /* UTC */
+			time_t st = strTime((char*)startTime.c_str()) + CTZ; /* UTC */
 			size_t row_idx = (size_t)((double)(st - ST) / RT);
 			size_t col_idx_s = ((st - ST) % RT) / 21600;
 			rows[row_idx].accS[col_idx_s] = atoi(severity.c_str());
 			rows[row_idx].accT++;
 			colCount++;
-			if (buf.find("2021-12-31") != string::npos) /* just to ensure it is working */
-				cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << endl;
+			// if (colCount <= 10) /* just to ensure it is working */
+			// 	cout << row_idx << ":" << col_idx_s << "\t" << severity << "\t" << startTime << endl;
 		}
 	}
 	cout << "Found " << colCount << " entries for " << city << " (accidients)" << endl;
@@ -111,7 +118,7 @@ int main(int argc, char* argv[])
 	acc.close();
 
 	of << "Date,W0000_0600,W0601_1200,W1201_1800,W1801_2359,WS1,WS2,WS3,WS4,";
-	of << "AS0000_0600,AS0601_1200,AS1201_1800,AS1801_2359,P_Value,A_Total,Accident\n";
+	of << "AS0000_0600,AS0601_1200,AS1201_1800,AS1801_2359,P_Value(in),A_Total,Accident\n";
 	for (size_t i = 0; i < IDX || row_time <= ET; i++) {
 		struct tm* tm_ = localtime(&row_time);
 		of << setfill('0') << setw(4) << tm_->tm_year + 1900 << "-";
@@ -123,7 +130,7 @@ int main(int argc, char* argv[])
 			of << rows[i].weatherS[j] << ",";
 		for (size_t j = 0; j < 4; j++)
 			of << rows[i].accS[j] << ",";
-		of << rows[i].precipitation << ",";
+		of << rows[i].p_value << ",";
 		of << rows[i].accT << "," << ((rows[i].accT) ? "TRUE\n" : "FALSE\n");
 		row_time += RT;
 	}
@@ -142,7 +149,7 @@ void initRows(row_t* r, size_t n)
 		r[i].weatherS[1] = "NA";
 		r[i].weatherS[2] = "NA";
 		r[i].weatherS[3] = "NA";
-		r[i].precipitation = 0.0;
+		r[i].p_value = 0.0;
 		r[i].accS[0] = 0;
 		r[i].accS[1] = 0;
 		r[i].accS[2] = 0;
@@ -172,167 +179,27 @@ char* isInt(const char* b_)
 	return (b_[0] == '\0') ? nullptr : (char*)b_;
 }
 
-time_t strTime(char* b_, struct tm* default_)
+time_t strTime(char* b_)
 {
 	/*
 		Basically this converts char* to time_t
-		YYYY[/|-]MM[/|-]DD hh[:|.]mm[:|.]ss hh[:|.]mm
-		I agree that this can be alot shorter, C compatible.
-		default_ will be used if any of the fields are not given
-		Eg. Given YYYY/MM, the DD = default_->tm_mday
+		YYYY-MM-DD hh:mm:ss hh:mm
 	*/
-	char* sep_d = "/-";
-	char* sep_h = ":.";
-	char* token[512];
 
-	time_t result;
-	struct tm indv;
+	struct tm indv = { 0 };
+	string buf(b_), date_, time_;
 
-	size_t count = 0;
-	size_t sc = 2;
-
-	char* p = b_;
-
-	int* ref[] = {
-		&(indv.tm_year),
-		&(indv.tm_mon),
-		&(indv.tm_mday)
-	};
-
-	indv.tm_year = -1;
-	indv.tm_mon = -1;
-	indv.tm_mday = -1;
-	indv.tm_hour = -1;
-	indv.tm_min = -1;
-	indv.tm_sec = -1;
 	indv.tm_isdst = -1;
 
-	token[count++] = b_;
+	date_ = buf.substr(0, buf.find(' '));
+	time_ = buf.substr(buf.find(' ') + 1);
 
-	while ((p = strchr(p, ' '))) {
-		*p = '\0';
-		token[count++] = ++p;
-	}
-	// 2021[/-]12[/-]25
-	for (size_t i = 0; i < count; i++) {
-
-		if (token[i][0] == '\0')
-			continue;
-
-		char* f;
-		size_t s_idx = -1;
-
-		for (size_t j = 0; j < sc; j++) {
-			f = token[i];
-			if ((f = strchr(f, sep_d[j]))) {
-				s_idx = j;
-				break;
-			}
-		}
-
-		if (!f)
-			continue;
-
-		char* s = strchr(f + 1, sep_d[s_idx]);
-		int n[3];
-
-		if (!s)
-			continue;
-
-		*f = '\0', *s = '\0';
-		if (isInt(token[i]) && isInt(f + 1) && isInt(s + 1)) {
-			n[0] = atoi(token[i]);
-			n[1] = atoi(f + 1);
-			n[2] = atoi(s + 1);
-			indv.tm_year = -1;
-			indv.tm_mon = -1;
-			indv.tm_mday = -1;
-		} else {
-			*f = sep_d[s_idx];
-			*s = sep_d[s_idx];
-			continue;
-		}
-		for (size_t k = 0; k < 3; k++) {
-			if (n[k] > 31) {
-				indv.tm_year = n[k] - 1900;
-				n[k] = -1;
-			} else if (n[k] > 12) {
-				indv.tm_mday = n[k];
-				n[k] = -1;
-			}
-		}
-		for (size_t k = 0; k < 3; k++) {
-			if (*(ref[k]) == -1)
-				for (size_t m = 0; m < 3; m++)
-					if (n[m] != -1) {
-						*(ref[k]) = n[m];
-						n[m] = -1;
-						break;
-					}
-		}
-		indv.tm_mon--;
-		*f = sep_d[s_idx];
-		*s = sep_d[s_idx];
-		break;
-	}
-hms:
-	// hh[:.]mm[:.]ss hh[:.]mm
-	for (size_t i = 0; i < count; i++) {
-
-		if (token[i][0] == '\0')
-			continue;
-
-		char* f;
-		size_t s_idx = -1;
-
-		for (size_t j = 0; j < sc; j++) {
-			f = token[i];
-			if ((f = strchr(f, sep_h[j]))) {
-				s_idx = j;
-				break;
-			}
-		}
-
-		if (!f)
-			continue;
-
-		char* s = strchr(f + 1, sep_h[s_idx]);
-		int n[3];
-
-		*f = '\0';
-		if (s)
-			*s = '\0';
-
-		if (s && isInt(token[i]) && isInt(f + 1) && isInt(s + 1)) {
-			indv.tm_hour = atoi(token[i]);
-			indv.tm_min = atoi(f + 1);
-			indv.tm_sec = atoi(s + 1);
-		} else if (!s && isInt(token[i]) && isInt(f + 1)) {
-			indv.tm_hour = atoi(token[i]);
-			indv.tm_min = atoi(f + 1);
-			indv.tm_sec = 0;
-		} else {
-			*f = sep_h[s_idx];
-			if (s)
-				*s = sep_h[s_idx];
-			continue;
-		}
-		*f = sep_h[s_idx];
-		if (s)
-			*s = sep_h[s_idx];
-		break;
-	}
-	// undo delimit
-	for (size_t i = 1; i < count; i++) {
-		*(--token[i]) = ' ';
-	}
-
-	indv.tm_year = (indv.tm_year == -1) ? default_->tm_year : indv.tm_year;
-	indv.tm_mon = (indv.tm_mon == -1) ? default_->tm_mon : indv.tm_mon;
-	indv.tm_mday = (indv.tm_mday == -1) ? default_->tm_mday : indv.tm_mday;
-	indv.tm_hour = (indv.tm_hour == -1) ? 0 : indv.tm_hour;
-	indv.tm_min = (indv.tm_min == -1) ? 0 : indv.tm_min;
-	indv.tm_sec = (indv.tm_sec == -1) ? 0 : indv.tm_sec;
+	indv.tm_year = stoi(date_.substr(0, date_.find('-'))) - 1900;
+	indv.tm_mon = stoi(date_.substr(date_.find('-') + 1, 2)) - 1;
+	indv.tm_mday = stoi(date_.substr(date_.find_last_of('-') + 1, 2));
+	indv.tm_hour = stoi(time_.substr(0, time_.find(':')));
+	indv.tm_min = stoi(time_.substr(time_.find(':') + 1, 2));
+	indv.tm_sec = stoi(time_.substr(time_.find_last_of(':') + 1, 2));
 
 	return mktime(&indv);
 }
