@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
 	acc.close();
 
 	of << "Date,W0000_0600,W0601_1200,W1201_1800,W1801_2359,WS1,WS2,WS3,WS4,";
-	of << "A0000_0600,A0601_1200,A1201_1800,A1801_2359,P_Value,A_Total,Accident\n";
+	of << "AS0000_0600,AS0601_1200,AS1201_1800,AS1801_2359,P_Value,A_Total,Accident\n";
 	for (size_t i = 0; i < IDX || row_time <= ET; i++) {
 		struct tm* tm_ = localtime(&row_time);
 		of << setfill('0') << setw(4) << tm_->tm_year + 1900 << "-";
