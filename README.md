@@ -26,7 +26,7 @@ WeatherEvents_Jan2016-Dec2021.csv (202203231900, 898M)
 US_Accidents... + WeatherEvents... = [countries].csv
 ```
 ```
-[countries].csv Columns: date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,accT,accTF
+[countries].csv Columns: date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,precipitation,accT,accTF
 
 date   : ranges from 2016/01/01 to 2021/12/31
 t[x]   : represents weather type
