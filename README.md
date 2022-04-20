@@ -26,21 +26,21 @@ WeatherEvents_Jan2016-Dec2021.csv (202203231900, 898M)
 US_Accidents... + WeatherEvents... = [countries].csv
 ```
 ```
-[countries].csv Columns: date,t1,t2,t3,t4,ts1,ts2,ts3,ts4,accS1,accS2,accS3,accS4,precipitation,accT,accTF
+[countries].csv Columns: Date,W1,W2,W3,W4,WS1,WS2,WS3,WS4,AS1,AS2,AS3,AS4,P_Value(in),A_Total,Accident
 
-date   : ranges from 2016/01/01 to 2021/12/31
-t[x]   : represents weather type
-ts[x]  : represents type severity
-accS[x]: represents accident severity
-accT   : represents total accidents in a day
-accTF  : accident on that day ?
+date     : ranges from 2016/01/01 to 2021/12/31
+W[x]     : represents weather type
+WS[x]    : represents weather severity
+AS[x]    : represents accident severity
+A_Total  : represents total accidents in a day
+Accident : accident on that day ?
 ```
 * Possible data fields (Same as original data set)
 ```
-date   : string, date
-t[x]   : string, ['Snow', 'Fog', 'Cold', 'Storm', 'Rain', 'Precipitation', 'Hail']
-ts[x]  : string, ['Light', 'Severe', 'Moderate', 'Heavy', 'UNK', 'Other']
-accS[x]: int
-accT   : int
-accTF  : string / boolean, TRUE | FALSE
+date     : string, date
+W[x]     : string, ['Snow', 'Fog', 'Cold', 'Storm', 'Rain', 'Precipitation', 'Hail']
+WS[x]    : string, ['Light', 'Severe', 'Moderate', 'Heavy', 'UNK', 'Other']
+AS[x]    : int
+A_Total  : int
+Accident : boolean, TRUE | FALSE
 ```

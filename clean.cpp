@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 	/* compile this source and run the program with country (1 at a time) as argument */
 	/* eg. ./[prog] 'New York' */
 	/* 
-		g++ clean.cpp -std=c++11
+		g++ clean.cpp -std=c++11 && \
 		./a.out Miami -4 && \
 		./a.out Denver -6 && \
 		./a.out Minneapolis -5 && \
