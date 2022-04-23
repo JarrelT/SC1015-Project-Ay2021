@@ -4,7 +4,7 @@
 
 * SC1015 (Project AY2021-22 Y1S2)
 * Repository for our group’s mini project for SC-1015 investigating the possibility of weather affecting the rate of traffic accidents occurring.
-*Done By: [Jarrel](https://github.com/JarrelT), [Jing Kai](https://github.com/Useidinstead), [Vernon](https://github.com/Vernonlzy)
+* Done By: [Jarrel](https://github.com/JarrelT), [Jing Kai](https://github.com/Useidinstead), [Vernon](https://github.com/Vernonlzy)
 ![Screenshot 2022-04-24 002857](https://user-images.githubusercontent.com/92446140/164914848-d00cae9f-5eeb-4eaf-a9e5-c2172604324b.png)
 
 
