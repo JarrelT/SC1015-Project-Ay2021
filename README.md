@@ -77,7 +77,7 @@ Accident : boolean, TRUE | FALSE
 - Collaborating using GitHub
 
 ## Contributors
-- All 3 contributed evenly
+- All 3 group members contributed evenly
 
 ## References
 - https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
