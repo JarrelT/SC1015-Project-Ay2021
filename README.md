@@ -76,6 +76,9 @@ Accident : boolean, TRUE | FALSE
 - Concepts about Precision
 - Collaborating using GitHub
 
+## Contributors
+- All 3 contributed evenly
+
 ## References
 - https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
 - https://towardsdatascience.com/understanding-random-forest-58381e0602d2
