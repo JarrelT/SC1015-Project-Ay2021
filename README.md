@@ -48,5 +48,37 @@ A_Total  : int
 Accident : boolean, TRUE | FALSE
 ```
 
-## Reference
-- 
+## Problem Definition
+
+- Does weather cause traffic accidents?
+
+## Models Used
+
+1. Linear Regression Model
+2. Classification Tree Model
+3. Random Forest Model
+
+## Conclusion
+
+- Weather and total number of accidents have low linear correlation value
+- Linear Regression Model does not show any relation between weather and total number of accidents
+- Classification accuracy of precipitation value (inches) and accidents is at a moderate level
+- Random forest does not drastically improve the accuracy of the Classification Tree Model
+- Weather is not an entirely accurate model
+- There are too many vairables affecting traffic accidents
+- No, it is not possible to predict if an extreme weather can result to an accident due to several external factors coming into consideration
+
+## What did we learn from this project?
+
+- Cleaning the datasets with C++
+- Random Forest from sklearn
+- Tuning the max depth of a decision tree to obtain the highest accuracy
+- Concepts about Precision
+- Collaborating using GitHub
+
+## References
+- https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+- https://towardsdatascience.com/understanding-random-forest-58381e0602d2
+- https://www.datacamp.com/community/tutorials/random-forests-classifier-python
+- https://towardsdatascience.com/how-to-tune-a-decision-tree-f03721801680
+- https://www.researchgate.net/figure/Calculation-of-Precision-Recall-and-Accuracy-in-the-confusion-matrix_fig3_336402347
